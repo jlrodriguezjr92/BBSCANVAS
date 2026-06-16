@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#1a1a1a" />
+  <title>BBS Ticket Request</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #F2C12E;
+      --teal: #2E9DB5;
+      --dark: #1a1a1a;
+      --surface: #242424;
+      --surface2: #2e2e2e;
+      --border: #3a3a3a;
+      --text: #f0f0f0;
+      --muted: #888;
+      --radius: 10px;
+    }
+
+    html {
+      height: 100%;
+      background: var(--dark);
+      overscroll-behavior: none;
+    }
+
+    body {
+      min-height: 100%;
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      -webkit-tap-highlight-color: transparent;
+      display: flex;
+      flex-direction: column;
+      padding: 0 0 40px;
+      overscroll-behavior: none;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-mark {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      width: 36px;
+      height: 36px;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .logo-mark span { border-radius: 2px; }
+    .logo-mark span:nth-child(1) { background: var(--yellow); }
+    .logo-mark span:nth-child(2) { background: var(--teal); }
+    .logo-mark span:nth-child(3) { background: var(--teal); }
+    .logo-mark span:nth-child(4) { background: var(--yellow); }
+
+    .header-text { line-height: 1.1; }
+
+    .header-text .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--yellow);
+      letter-spacing: 0.02em;
+    }
+
+    .header-text .sub {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px 16px 0;
+      max-width: 540px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .field { margin-bottom: 18px; }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      padding: 14px 16px;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      transition: border-color 0.15s;
+      touch-action: manipulation;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      border-color: var(--teal);
+    }
+
+    .select-wrap { position: relative; }
+
+    .select-wrap::after {
+      content: '▾';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: none;
+      min-height: 110px;
+      line-height: 1.5;
+    }
+
+    .preview-wrap {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 22px;
+    }
+
+    .preview-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    #subjectPreview {
+      font-size: 14px;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    #subjectPreview .token {
+      color: var(--yellow);
+      font-weight: 600;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    button {
+      width: 100%;
+      min-height: 52px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    button:active { transform: scale(0.98); opacity: 0.85; }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: #111;
+    }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-reset {
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 40px;
+      text-decoration: underline;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--teal);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 50px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      white-space: nowrap;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="header-text">
+    <div class="brand">Bahia</div>
+    <div class="sub">Quick Ticket</div>
+  </div>
+</header>
+
+<main>
+
+  <div class="field">
+    <label for="clientSelect">Client</label>
+    <div class="select-wrap">
+      <select id="clientSelect">
+        <option value="">— Select client —</option>
+        <option value="2GC|2-GConsulting">2-GConsulting</option>
+        <option value="ANGEL|Angel Pest Control">Angel Pest Control</option>
+        <option value="BBS|Bahia Business Solutions">Bahia Business Solutions</option>
+        <option value="DRWHITE|BBS-DrCharlesWhite">BBS-DrCharlesWhite</option>
+        <option value="BELLA|Bella Vista Dental">Bella Vista Dental</option>
+        <option value="C21|C21DandD">C21DandD</option>
+        <option value="CARAWAY|Caraway Ford">Caraway Ford</option>
+        <option value="CONST|Constructinc">Constructinc</option>
+        <option value="DLEE|DLee Edwards">DLee Edwards</option>
+        <option value="DRKUO|Dr Kuo">Dr Kuo</option>
+        <option value="DRMANNEL|Dr. Mannel">Dr. Mannel</option>
+        <option value="FINCH|Finch Law">Finch Law</option>
+        <option value="GIFTGOUR|GiftandGourmet">GiftandGourmet</option>
+        <option value="GUADALUPE|GuadalupeFamilyHealth">GuadalupeFamilyHealth</option>
+        <option value="JSTAX|JS Tax Service">JS Tax Service</option>
+        <option value="KAYCOEMF|KaycoEmf">KaycoEmf</option>
+        <option value="KAYCO|KaycoSprayBooth">KaycoSprayBooth</option>
+        <option value="KIRCHNER|Kirchner Women's Clinic">Kirchner Women's Clinic</option>
+        <option value="LATINOS|Latinos Unidos">Latinos Unidos</option>
+        <option value="LONESTAR|LonestarHomeSolutions">LonestarHomeSolutions</option>
+        <option value="LULINGO|Luling Golf Related">Luling Golf Related</option>
+        <option value="LULINGSP|Luling Sport">Luling Sport</option>
+        <option value="MALNURS|Maldonado Nursery">Maldonado Nursery</option>
+        <option value="MIXED|Mixed Users">Mixed Users</option>
+        <option value="MORGAN|Morgan">Morgan</option>
+        <option value="OURLADY|OurLady">OurLady</option>
+        <option value="PECAN|Pecan Country Chiro">Pecan Country Chiro</option>
+        <option value="PRECBOAT|Precision Boat">Precision Boat</option>
+        <option value="PUREGENTLE|PureandGentle">PureandGentle</option>
+        <option value="REDMAN|Red Mansion">Red Mansion</option>
+        <option value="SCHAEFER|SchaeferCrop">SchaeferCrop</option>
+        <option value="SEGUINMED|Seguin Medicine and Spa">Seguin Medicine and Spa</option>
+        <option value="SEGUINORTHO|Seguin Orthopedics">Seguin Orthopedics</option>
+        <option value="SULLIVAN|Sullivan Contracting Services">Sullivan Contracting Services</option>
+        <option value="TEMPLATE|Template">Template</option>
+        <option value="TXOPTICAL|Texas State Optical">Texas State Optical</option>
+        <option value="TXHORIZON|TexasHorizonLaw">TexasHorizonLaw</option>
+        <option value="RAETZSCH|Thomas Raetzsch">Thomas Raetzsch</option>
+        <option value="TWINCREEK|TwinCreek">TwinCreek</option>
+        <option value="UMC|UMC Churches">UMC Churches</option>
+        <option value="UHAUL|Uhaul Leroy">Uhaul Leroy</option>
+        <option value="WATERPARK|WaterparkExcite">WaterparkExcite</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="issueTitle">Issue Title</label>
+    <input
+      type="text"
+      id="issueTitle"
+      inputmode="text"
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false"
+      placeholder="e.g. Outlook not opening"
+    />
+  </div>
+
+  <div class="field">
+    <label for="customerName">Customer Name <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+    <input
+      type="text"
+      id="customerName"
+      inputmode="text"
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false"
+      placeholder="e.g. John Smith"
+    />
+  </div>
+
+  <div class="field">
+    <label for="pcInfo">PC Info <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+    <input
+      type="text"
+      id="pcInfo"
+      inputmode="text"
+      autocomplete="off"
+      autocorrect="off"
+      spellcheck="false"
+      placeholder="e.g. DESKTOP-JSMITH or Asset #1234"
+    />
+  </div>
+
+  <div class="field">
+    <label for="issueDetails">Details <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+    <textarea
+      id="issueDetails"
+      inputmode="text"
+      placeholder="Any extra context — steps, error messages, affected users…"
+    ></textarea>
+  </div>
+
+  <div class="preview-wrap">
+    <div class="preview-label">Subject Preview</div>
+    <div id="subjectPreview"><span style="color:var(--muted)">Fill in client + title to preview</span></div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn-primary" onclick="openMailApp()">Open in Mail App</button>
+    <button class="btn-secondary" onclick="copySubject()">Copy Subject Line</button>
+    <button class="btn-reset" onclick="resetForm()">Clear form</button>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+  const TO = 'itsupport@bahiabusinesssolutions.com';
+
+  const clientSel   = document.getElementById('clientSelect');
+  const titleInput  = document.getElementById('issueTitle');
+  const customerInp = document.getElementById('customerName');
+  const pcInfoInp   = document.getElementById('pcInfo');
+  const detailsTA   = document.getElementById('issueDetails');
+  const preview     = document.getElementById('subjectPreview');
+
+  function getToken() {
+    const val = clientSel.value;
+    return val ? val.split('|')[0] : '';
+  }
+
+  function getClientName() {
+    const val = clientSel.value;
+    return val ? val.split('|')[1] : '';
+  }
+
+  function buildSubject() {
+    const token = getToken();
+    const title = titleInput.value.trim();
+    if (!token && !title) return '';
+    const parts = [];
+    if (token) parts.push(`[${token}]`);
+    if (title) parts.push(title);
+    return parts.join(' ');
+  }
+
+  function updatePreview() {
+    const token = getToken();
+    const title = titleInput.value.trim();
+
+    if (!token && !title) {
+      preview.innerHTML = '<span style="color:var(--muted)">Fill in client + title to preview</span>';
+      return;
+    }
+
+    let html = '';
+    if (token) html += `<span class="token">[${token}]</span> `;
+    if (title) html += `<span>${title}</span>`;
+    preview.innerHTML = html || '<span style="color:var(--muted)">Fill in client + title to preview</span>';
+  }
+
+  clientSel.addEventListener('change', updatePreview);
+  titleInput.addEventListener('input', updatePreview);
+
+  function openMailApp() {
+    const subject = buildSubject();
+    if (!subject) {
+      showToast('Pick a client and enter an issue title first');
+      return;
+    }
+
+    const clientName = getClientName();
+    const customerName = customerInp.value.trim();
+    const pcInfo = pcInfoInp.value.trim();
+    const details = detailsTA.value.trim();
+
+    let body = `Client: ${clientName}\n`;
+
+    if (customerName) {
+      body += `Customer Name: ${customerName}\n`;
+    }
+
+    if (pcInfo) {
+      body += `PC Info: ${pcInfo}\n`;
+    }
+
+    if (details) {
+      body += `\nDetails:\n${details}`;
+    }
+
+    body += '\n\n---\nSent via BBS Quick Ticket';
+
+    const mailto = `mailto:${TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+  }
+
+  function copySubject() {
+    const subject = buildSubject();
+    if (!subject) {
+      showToast('Nothing to copy yet');
+      return;
+    }
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(subject).then(() => showToast('Subject copied!'));
+    } else {
+      const el = document.createElement('textarea');
+      el.value = subject;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      showToast('Subject copied!');
+    }
+  }
+
+  function resetForm() {
+    clientSel.value = '';
+    titleInput.value = '';
+    customerInp.value = '';
+    pcInfoInp.value = '';
+    detailsTA.value = '';
+    updatePreview();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+</script>
+
+</body>
+</html>
