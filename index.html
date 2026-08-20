@@ -1,784 +1,989 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="BBS Canvas" />
-<title>BBS Canvassing Sheet</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b3d5c">
+<title>BBS Canvassing</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230b3d5c'/%3E%3Ctext x='90' y='118' font-family='Helvetica,Arial' font-size='78' font-weight='bold' fill='%23fff' text-anchor='middle'%3EBBS%3C/text%3E%3C/svg%3E">
 <style>
-:root {
-  --bg: #f5f4f0;
-  --surface: #ffffff;
-  --surface2: #f0efe9;
-  --border: rgba(0,0,0,0.10);
-  --border-md: rgba(0,0,0,0.18);
-  --text: #1a1917;
-  --text2: #6b6a65;
-  --text3: #a09f9a;
-  --accent: #2d4a3e;
-  --accent-light: #e8f0ec;
-  --accent-text: #1a2e26;
-  --danger: #c0392b;
-  --danger-light: #fdf0ee;
-  --hot: #15803d;
-  --hot-light: #dcfce7;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: env(safe-area-inset-bottom); }
-
-/* HEADER */
-.app-header { background: var(--accent); color: #fff; padding: 16px 16px 14px; padding-top: calc(16px + env(safe-area-inset-top)); position: sticky; top: 0; z-index: 100; }
-.app-header h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
-.app-header p { font-size: 12px; opacity: 0.65; margin-top: 2px; font-family: 'DM Mono', monospace; }
-.header-stats { display: flex; gap: 10px; margin-top: 12px; }
-.hstat { text-align: center; background: rgba(255,255,255,0.12); border-radius: var(--radius-sm); padding: 7px 10px; flex: 1; }
-.hstat-num { font-size: 20px; font-weight: 600; line-height: 1; }
-.hstat-label { font-size: 10px; opacity: 0.65; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
-
-/* STOP TABS */
-.stop-nav-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; position: sticky; top: calc(104px + env(safe-area-inset-top)); z-index: 99; }
-.stop-nav { display: flex; gap: 8px; width: max-content; }
-.stop-tab { height: 34px; padding: 0 14px; border: 1px solid var(--border-md); border-radius: 20px; background: var(--surface2); color: var(--text2); font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
-.stop-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-.stop-tab.saved { border-color: var(--hot); color: var(--hot); background: var(--hot-light); }
-.stop-tab.active.saved { background: var(--accent); border-color: var(--accent); color: #fff; }
-.add-stop-btn { height: 34px; padding: 0 14px; border: 1px dashed var(--border-md); border-radius: 20px; background: transparent; color: var(--text3); font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap; }
-
-/* CONTENT */
-.content { padding: 14px 16px 32px; max-width: 520px; margin: 0 auto; }
-.rep-row { display: flex; gap: 10px; margin-bottom: 14px; }
-.rep-row .field { flex: 1; margin-bottom: 0; }
-
-/* CARDS */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow); }
-.card-title { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-.card-title svg { width: 14px; height: 14px; flex-shrink: 0; }
-
-/* FIELDS */
-.field { margin-bottom: 10px; }
-.field:last-child { margin-bottom: 0; }
-.field label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 4px; font-weight: 500; }
-.field input, .field select, .field textarea { width: 100%; font-size: 15px; padding: 10px 12px; border: 1px solid var(--border-md); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text); font-family: 'DM Sans', sans-serif; appearance: none; -webkit-appearance: none; transition: border-color 0.15s, background 0.15s; }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); background: #fff; }
-.field textarea { resize: none; height: 70px; line-height: 1.5; }
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.select-wrap { position: relative; }
-.select-wrap::after { content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--text3); pointer-events: none; }
-.select-wrap select { padding-right: 30px; }
-
-/* INPUT WITH ICON BUTTONS (location / mic) */
-.input-row { display: flex; gap: 6px; align-items: flex-end; }
-.input-row .field { flex: 1; margin-bottom: 0; }
-.input-row input, .input-row textarea { width: 100%; }
-.icon-btn { flex-shrink: 0; height: 44px; width: 44px; border: 1px solid var(--border-md); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.15s; }
-.icon-btn:active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.icon-btn.locating, .icon-btn.recording { background: var(--accent); color: #fff; border-color: var(--accent); pointer-events: none; }
-.icon-btn.recording { background: var(--danger); border-color: var(--danger); animation: pulse 1s ease-in-out infinite; }
-
-/* INTEREST */
-.interest-row { display: flex; gap: 6px; }
-.int-btn { flex: 1; height: 44px; border: 1px solid var(--border-md); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text2); font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.12s; }
-.int-btn.a1 { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
-.int-btn.a2 { background: #fff7ed; border-color: #fdba74; color: #92400e; }
-.int-btn.a3 { background: #fefce8; border-color: #fde047; color: #713f12; }
-.int-btn.a4 { background: #f0fdf4; border-color: #86efac; color: #14532d; }
-.int-btn.a5 { background: #dcfce7; border-color: #4ade80; color: #14532d; }
-.int-label { font-size: 11px; color: var(--text3); text-align: center; margin-top: 6px; font-family: 'DM Mono', monospace; }
-
-/* TOGGLES */
-.toggle-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.toggle-field label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 4px; font-weight: 500; }
-.tog-btn { width: 100%; height: 44px; border: 1px solid var(--border-md); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text2); font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.12s; }
-.tog-btn.yes { background: var(--hot-light); border-color: #86efac; color: var(--hot); }
-.tog-btn.no { background: var(--danger-light); border-color: #fca5a5; color: var(--danger); }
-
-/* MAIN BUTTONS */
-.btn-primary { width: 100%; height: 50px; border: none; border-radius: var(--radius); background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px; transition: opacity 0.15s; }
-.btn-primary:active { opacity: 0.85; }
-.post-save { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-.post-save.show { display: grid; }
-.btn-secondary { height: 46px; border: 1px solid var(--border-md); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.12s; }
-.btn-secondary.green { background: var(--accent-light); border-color: #86efac; color: var(--accent-text); }
-.btn-secondary:active { opacity: 0.8; }
-
-/* ── AI VOICE FILL BUTTON ── Remove this block to disable AI voice fill */
-.voice-fill-bar { margin-bottom: 14px; }
-.btn-voice-fill { width: 100%; height: 52px; border: 1.5px solid var(--accent); border-radius: var(--radius); background: var(--accent-light); color: var(--accent-text); font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.15s; }
-.btn-voice-fill:active { background: var(--accent); color: #fff; }
-.btn-voice-fill.recording { background: var(--danger); border-color: var(--danger); color: #fff; animation: pulse 1s ease-in-out infinite; }
-.btn-voice-fill.processing { background: var(--accent); border-color: var(--accent); color: #fff; pointer-events: none; }
-.voice-hint { font-size: 11px; color: var(--text3); text-align: center; margin-top: 6px; line-height: 1.5; }
-/* ── END AI VOICE FILL BUTTON ── */
-
-/* REPORT */
-.report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-top: 20px; box-shadow: var(--shadow); }
-.report-label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-.report-row { display: flex; gap: 8px; }
-.report-row input { flex: 1; font-size: 14px; padding: 10px 12px; border: 1px solid var(--border-md); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text); font-family: 'DM Sans', sans-serif; }
-.report-row input:focus { outline: none; border-color: var(--accent); background: #fff; }
-.btn-send { flex-shrink: 0; height: 44px; padding: 0 18px; border: none; border-radius: var(--radius-sm); background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s; }
-.btn-send:active { opacity: 0.85; }
-.report-hint { font-size: 11px; color: var(--text3); margin-top: 8px; line-height: 1.4; }
-
-/* TOAST */
-.toast { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%) translateY(8px); background: var(--text); color: #fff; padding: 11px 20px; border-radius: 24px; font-size: 14px; font-weight: 500; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; white-space: nowrap; z-index: 9999; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.ok { background: var(--accent); }
-.toast.err { background: var(--danger); }
-
-/* SPINNER & PULSE */
-.spin { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.7; } }
+  :root{
+    --bg:#0f1720; --panel:#18232f; --panel2:#1f2d3c; --line:#2c3d4f;
+    --text:#e8eef4; --muted:#93a5b6; --brand:#2b8fd6; --brand-dark:#0b3d5c;
+    --good:#2fbf71; --warn:#e0a33a; --bad:#e05c5c; --radius:14px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--text);
+    font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 100px) env(safe-area-inset-left);
+    -webkit-text-size-adjust:100%;
+  }
+  header{
+    position:sticky;top:0;z-index:20;
+    background:linear-gradient(180deg,var(--brand-dark),#0a3350);
+    padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;
+    margin:calc(env(safe-area-inset-top) * -1) calc(env(safe-area-inset-right) * -1) 0 calc(env(safe-area-inset-left) * -1);
+    border-bottom:1px solid #0a2d47;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  header h1{font-size:17px;margin:0;letter-spacing:.3px;font-weight:700}
+  header .sub{font-size:11px;color:#9fc6e2;font-weight:500;letter-spacing:.6px;text-transform:uppercase}
+  .hdr-right{display:flex;align-items:center;gap:8px}
+  .savedot{
+    font-size:10px;color:#9fc6e2;letter-spacing:.4px;text-transform:uppercase;
+    font-weight:700;opacity:0;transition:opacity .25s;white-space:nowrap;
+  }
+  .savedot.on{opacity:1}
+  .iconbtn{background:rgba(255,255,255,.12);border:0;color:#fff;width:38px;height:38px;border-radius:10px;font-size:18px}
+  main{padding:14px 16px 0;max-width:640px;margin:0 auto}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+  .card h2{
+    font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);
+    margin:0 0 10px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  }
+  .card h2 .count{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--text);font-size:11px}
+  label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:600}
+  input,textarea,select{
+    width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);
+    border-radius:10px;padding:11px 12px;font-size:16px;font-family:inherit;appearance:none;
+  }
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:var(--brand)}
+  textarea{min-height:110px;resize:vertical;line-height:1.5}
+  .row{display:flex;gap:10px}
+  .row>*{flex:1;min-width:0}
+  button{font-family:inherit;font-size:15px;font-weight:600;border-radius:11px;border:0;padding:12px 14px}
+  .btn{background:var(--panel2);color:var(--text);border:1px solid var(--line);width:100%}
+  .btn:active{background:#26374a}
+  .btn-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .btn-primary:active{background:#2277b0}
+  .btn-rec{background:var(--bad);color:#fff;border-color:var(--bad)}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
+  .btn:disabled{opacity:.45}
+  .stack>*+*{margin-top:10px}
+  .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4}
+  .status{
+    font-size:13px;padding:9px 11px;border-radius:9px;margin-top:10px;
+    background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+    display:none;white-space:pre-wrap;
+  }
+  .status.show{display:block}
+  .status.good{border-color:var(--good);color:#a9e8c6}
+  .status.warn{border-color:var(--warn);color:#f0d9a9}
+  .status.bad{border-color:var(--bad);color:#f3b6b6}
+  .status.busy{border-color:var(--brand);color:#a9d5f0}
+  .pillrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .pill{
+    background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+    padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600;flex:0 0 auto;width:auto;
+  }
+  .pill.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .rec-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#fff;margin-right:7px;vertical-align:1px;animation:blink 1s steps(2,start) infinite}
+  @keyframes blink{to{visibility:hidden}}
+  /* route list */
+  .stop{
+    display:flex;align-items:center;gap:10px;padding:11px 12px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;margin-bottom:8px;
+  }
+  .stop.editing{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand) inset}
+  .stop .num{
+    flex:0 0 26px;height:26px;border-radius:50%;background:var(--brand-dark);
+    color:#9fc6e2;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  }
+  .stop .body{flex:1;min-width:0}
+  .stop .t{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stop .m{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .stop .del{flex:0 0 auto;width:32px;height:32px;padding:0;background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;font-size:15px}
+  .empty{font-size:13px;color:var(--muted);text-align:center;padding:14px 8px;line-height:1.5}
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:30;
+    background:rgba(15,23,32,.94);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);
+    padding:10px 16px calc(env(safe-area-inset-bottom) + 10px);display:flex;gap:10px;
+  }
+  .bar button{flex:1}
+  .modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.6);display:none;align-items:flex-end}
+  .modal.show{display:flex}
+  .sheet{
+    background:var(--panel);width:100%;border-radius:18px 18px 0 0;
+    padding:18px 16px calc(env(safe-area-inset-bottom) + 18px);
+    max-height:88vh;overflow:auto;border-top:1px solid var(--line);
+  }
+  .sheet h3{margin:0 0 4px;font-size:17px}
+  .small{font-size:12px;color:var(--muted)}
+  .kv{font-size:13px;color:var(--muted);margin-top:6px;word-break:break-word}
+  .kv b{color:var(--text);font-weight:600}
+  .banner{
+    background:#3a2a12;border:1px solid var(--warn);color:#f0d9a9;
+    font-size:13px;padding:10px 12px;border-radius:10px;margin:0 0 14px;display:none;line-height:1.45;
+  }
+  .banner.show{display:block}
 </style>
 </head>
 <body>
 
-<div class="app-header">
-  <h1>🗺 BBS Canvassing</h1>
-  <p id="date-display"></p>
-  <div class="header-stats">
-    <div class="hstat"><div class="hstat-num" id="stat-stops">0</div><div class="hstat-label">Stops</div></div>
-    <div class="hstat"><div class="hstat-num" id="stat-hot">0</div><div class="hstat-label">Hot</div></div>
-    <div class="hstat"><div class="hstat-num" id="stat-appts">0</div><div class="hstat-label">Appts</div></div>
-    <div class="hstat"><div class="hstat-num" id="stat-quotes">0</div><div class="hstat-label">Quotes</div></div>
+<header>
+  <div>
+    <h1>BBS Canvassing</h1>
+    <div class="sub" id="routeLabel">Field Route</div>
   </div>
+  <div class="hdr-right">
+    <span class="savedot" id="saveDot">Saved</span>
+    <button class="iconbtn" id="settingsBtn" aria-label="Settings">&#9881;</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="banner" id="storageBanner"></div>
+
+  <!-- ROUTE -->
+  <div class="card">
+    <h2>Today&rsquo;s Route <span class="count" id="stopCount">0 stops</span></h2>
+    <div id="stopList"></div>
+    <div class="stack" style="margin-top:10px">
+      <button class="btn" id="newStopBtn">&#43;&nbsp; New Stop</button>
+    </div>
+  </div>
+
+  <!-- LOCATION -->
+  <div class="card">
+    <h2>1 &middot; Location</h2>
+    <div class="stack">
+      <button class="btn btn-primary" id="gpsBtn">&#128205;&nbsp; Capture GPS Address</button>
+      <label for="address">Address</label>
+      <input id="address" placeholder="Street address" autocomplete="off">
+      <div class="row">
+        <div><label for="city">City</label><input id="city" autocomplete="off"></div>
+        <div><label for="state">State</label><input id="state" autocomplete="off"></div>
+        <div><label for="zip">ZIP</label><input id="zip" inputmode="numeric" autocomplete="off"></div>
+      </div>
+    </div>
+    <div class="status" id="gpsStatus"></div>
+    <div class="kv" id="coordsLine"></div>
+    <input type="hidden" id="lat"><input type="hidden" id="lon">
+  </div>
+
+  <!-- DICTATION -->
+  <div class="card">
+    <h2>2 &middot; Dictate the Visit</h2>
+    <div class="stack">
+      <button class="btn btn-primary" id="micBtn">&#127908;&nbsp; Start Dictation</button>
+      <textarea id="transcript" placeholder="Talk it out: business name, who you spoke to, what they use now, pain points, next step&hellip; Or type it here."></textarea>
+      <button class="btn" id="parseBtn">&#10024;&nbsp; Parse with AI</button>
+    </div>
+    <div class="status" id="dictStatus"></div>
+    <div class="hint">Every word is saved to this phone as you speak &mdash; backgrounding the app will not lose it.</div>
+  </div>
+
+  <!-- DETAILS -->
+  <div class="card">
+    <h2>3 &middot; Visit Details</h2>
+    <label for="business">Business / Property Name</label>
+    <input id="business" autocomplete="off">
+    <div class="row">
+      <div><label for="contact">Contact Name</label><input id="contact" autocomplete="off"></div>
+      <div><label for="title">Title / Role</label><input id="title" autocomplete="off"></div>
+    </div>
+    <div class="row">
+      <div><label for="phone">Phone</label><input id="phone" type="tel" inputmode="tel" autocomplete="off"></div>
+      <div><label for="email">Email</label><input id="email" type="email" inputmode="email" autocapitalize="none" autocomplete="off"></div>
+    </div>
+
+    <label>Outcome</label>
+    <div class="pillrow" id="outcomeRow">
+      <button class="pill" data-v="Interested">Interested</button>
+      <button class="pill" data-v="Follow-up">Follow-up</button>
+      <button class="pill" data-v="Not Interested">Not Interested</button>
+      <button class="pill" data-v="No Answer">No Answer</button>
+      <button class="pill" data-v="Gatekeeper">Gatekeeper</button>
+      <button class="pill" data-v="Left Card">Left Card</button>
+    </div>
+
+    <label>Services Discussed</label>
+    <div class="pillrow" id="servicesRow">
+      <button class="pill" data-v="Managed IT">Managed IT</button>
+      <button class="pill" data-v="Network / WiFi">Network / WiFi</button>
+      <button class="pill" data-v="Cameras">Cameras</button>
+      <button class="pill" data-v="VoIP">VoIP</button>
+      <button class="pill" data-v="Cabling">Cabling</button>
+      <button class="pill" data-v="Break/Fix">Break/Fix</button>
+      <button class="pill" data-v="Signage">Signage</button>
+      <button class="pill" data-v="Web / Marketing">Web / Marketing</button>
+    </div>
+
+    <div class="row">
+      <div><label for="current">Current Provider</label><input id="current" autocomplete="off"></div>
+      <div><label for="followup">Follow-up Date</label><input id="followup" type="date"></div>
+    </div>
+
+    <label for="notes">Notes / Next Step</label>
+    <textarea id="notes" style="min-height:90px"></textarea>
+  </div>
+
+  <div class="card">
+    <h2>Route Tools</h2>
+    <div class="stack">
+      <button class="btn" id="emailRouteBtn">&#9993;&nbsp; Email Whole Route</button>
+      <button class="btn btn-ghost" id="backupBtn">&#8681;&nbsp; Download Backup (.json)</button>
+      <button class="btn btn-ghost" id="endRouteBtn">Start a New Route</button>
+    </div>
+    <div class="status" id="routeStatus"></div>
+    <div class="hint" id="lastSavedHint"></div>
+  </div>
+
+</main>
+
+<div class="bar">
+  <button class="btn btn-ghost" id="discardBtn">Discard</button>
+  <button class="btn btn-primary" id="saveStopBtn">&#10003;&nbsp; Save Stop</button>
+  <button class="btn" id="emailStopBtn">&#9993;</button>
 </div>
 
-<div class="stop-nav-wrap">
-  <div class="stop-nav" id="stop-nav">
-    <button class="stop-tab active" onclick="switchStop(0)">Stop 1</button>
-    <button class="add-stop-btn" onclick="addStop()">+ Add stop</button>
+<!-- SETTINGS -->
+<div class="modal" id="settingsModal">
+  <div class="sheet">
+    <h3>Settings</h3>
+    <p class="small">Stored on this phone only. Nothing leaves the device except your email and (if used) the AI parse call.</p>
+
+    <label for="apiKey">Anthropic API Key</label>
+    <input id="apiKey" type="password" placeholder="sk-ant-&hellip;" autocapitalize="none" autocomplete="off" spellcheck="false">
+    <div class="hint">Optional &mdash; only for &ldquo;Parse with AI&rdquo;. Dictation and email work without it.</div>
+
+    <label for="recipients">Report Recipients</label>
+    <textarea id="recipients" style="min-height:70px" autocapitalize="none" spellcheck="false"></textarea>
+
+    <label for="repName">Your Name</label>
+    <input id="repName" autocomplete="off">
+
+    <label for="routeName">Route Name</label>
+    <input id="routeName" placeholder="e.g. Ocean Springs — Tue" autocomplete="off">
+
+    <div class="stack" style="margin-top:16px">
+      <button class="btn btn-primary" id="saveSettings">Save</button>
+      <button class="btn btn-ghost" id="closeSettings">Close</button>
+    </div>
+    <div class="status" id="setStatus"></div>
   </div>
 </div>
-
-<div class="content">
-
-  <!-- REP NAME -->
-  <div class="rep-row">
-    <div class="field"><label>Sales rep</label><input type="text" id="rep-name" placeholder="Your name" /></div>
-  </div>
-
-  <!-- ══ AI VOICE FILL — Remove this block to disable AI voice fill ══ -->
-  <div class="voice-fill-bar">
-    <button class="btn-voice-fill" id="voice-fill-btn" onclick="toggleVoiceFill()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h2M6 8v8M10 5v14M14 8v8M18 6v12M22 12h-2"/></svg>
-      Dictate this stop
-    </button>
-    <p class="voice-hint">Tap and speak naturally — e.g. "Company is Seguin Dental, spoke with Maria, decision maker is Dr. Patel, interest level 4, pain point is slow internet, next step send quote"</p>
-  </div>
-  <!-- ══ END AI VOICE FILL ══ -->
-
-  <!-- BUSINESS INFO -->
-  <div class="card">
-    <div class="card-title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      Business info
-    </div>
-    <!-- Company with per-field mic -->
-    <div class="field">
-      <label>Company name</label>
-      <div class="input-row">
-        <div class="field"><input type="text" data-key="company" placeholder="Business name" /></div>
-        <!-- ── PER-FIELD MIC — Remove icon-btn elements to disable per-field speech ── -->
-        <button class="icon-btn" id="mic-company" onclick="micField('company')" title="Speak company name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg></button>
-      </div>
-    </div>
-    <!-- Address with location + mic -->
-    <div class="field">
-      <label>Address</label>
-      <div class="input-row">
-        <div class="field"><input type="text" id="address-field" data-key="address" placeholder="Street address" /></div>
-        <button class="icon-btn" id="loc-btn" onclick="captureLocation()" title="Use current location"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></button>
-        <!-- ── PER-FIELD MIC ── -->
-        <button class="icon-btn" id="mic-address" onclick="micField('address')" title="Speak address"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg></button>
-      </div>
-    </div>
-    <!-- Phone with mic -->
-    <div class="field">
-      <label>Phone</label>
-      <div class="input-row">
-        <div class="field"><input type="tel" data-key="phone" placeholder="(555) 000-0000" /></div>
-        <!-- ── PER-FIELD MIC ── -->
-        <button class="icon-btn" id="mic-phone" onclick="micField('phone')" title="Speak phone number"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONTACTS -->
-  <div class="card">
-    <div class="card-title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      Contacts
-    </div>
-    <div class="field-row">
-      <!-- Receptionist with mic -->
-      <div class="field">
-        <label>Receptionist</label>
-        <div class="input-row">
-          <div class="field"><input type="text" data-key="receptionist" placeholder="Name" /></div>
-          <!-- ── PER-FIELD MIC ── -->
-          <button class="icon-btn" id="mic-receptionist" onclick="micField('receptionist')" title="Speak name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg></button>
-        </div>
-      </div>
-      <!-- Decision maker with mic -->
-      <div class="field">
-        <label>Decision maker</label>
-        <div class="input-row">
-          <div class="field"><input type="text" data-key="decision-maker" placeholder="Name &amp; title" /></div>
-          <!-- ── PER-FIELD MIC ── -->
-          <button class="icon-btn" id="mic-decision-maker" onclick="micField('decision-maker')" title="Speak name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg></button>
-        </div>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label>Phone / ext</label><input type="tel" data-key="dm-phone" placeholder="(555) 000-0000" /></div>
-      <div class="field"><label>Email</label><input type="email" data-key="email" placeholder="name@co.com" /></div>
-    </div>
-  </div>
-
-  <!-- VISIT DETAILS -->
-  <div class="card">
-    <div class="card-title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-      Visit details
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>Industry</label>
-        <div class="select-wrap">
-          <select data-key="industry">
-            <option value="">Select…</option>
-            <option>Medical / Healthcare</option>
-            <option>Dental</option>
-            <option>Manufacturing</option>
-            <option>Electrical</option>
-            <option>Legal</option>
-            <option>Real Estate</option>
-            <option>Retail</option>
-            <option>Restaurant / Food Service</option>
-            <option>Finance / Accounting</option>
-            <option>Construction</option>
-            <option>Education</option>
-            <option>Other</option>
-          </select>
-        </div>
-      </div>
-      <div class="field"><label>Current vendor</label><input type="text" data-key="provider" placeholder="Who they use now" /></div>
-    </div>
-    <!-- Pain points with mic -->
-    <div class="field">
-      <label>Pain points</label>
-      <div class="input-row" style="align-items:flex-start;">
-        <div class="field"><textarea data-key="pain" placeholder="What problems did they mention?"></textarea></div>
-        <!-- ── PER-FIELD MIC ── -->
-        <button class="icon-btn" style="margin-top:0;" onclick="micField('pain')" title="Speak pain points"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INTEREST -->
-  <div class="card">
-    <div class="card-title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      Interest level
-    </div>
-    <div class="interest-row">
-      <button class="int-btn" data-val="1" onclick="setInterest(1)">1</button>
-      <button class="int-btn" data-val="2" onclick="setInterest(2)">2</button>
-      <button class="int-btn" data-val="3" onclick="setInterest(3)">3</button>
-      <button class="int-btn" data-val="4" onclick="setInterest(4)">4</button>
-      <button class="int-btn" data-val="5" onclick="setInterest(5)">5</button>
-    </div>
-    <div class="int-label" id="int-label">Tap to rate</div>
-  </div>
-
-  <!-- FOLLOW-UP -->
-  <div class="card">
-    <div class="card-title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      Follow-up
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>Next step</label>
-        <div class="select-wrap">
-          <select data-key="next-step">
-            <option value="">Select…</option>
-            <option>Call to follow up</option>
-            <option>Send quote</option>
-            <option>Email intro / info</option>
-            <option>Schedule demo</option>
-            <option>Return visit</option>
-            <option>No follow-up needed</option>
-          </select>
-        </div>
-      </div>
-      <div class="field"><label>Follow-up date</label><input type="date" data-key="followup-date" /></div>
-    </div>
-    <div class="toggle-row" style="margin-top:4px;">
-      <div class="toggle-field">
-        <label>Quote needed?</label>
-        <button class="tog-btn" id="quote-btn" onclick="toggleField('quote-btn','quote')">— Not set</button>
-      </div>
-      <div class="toggle-field">
-        <label>Appointment set?</label>
-        <button class="tog-btn" id="appt-btn" onclick="toggleField('appt-btn','appt')">— Not set</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- NOTES -->
-  <div class="card">
-    <div class="card-title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>
-      Notes
-    </div>
-    <div class="field">
-      <div class="input-row" style="align-items:flex-start;">
-        <div class="field"><textarea data-key="notes" placeholder="Anything else worth noting…" style="height:80px;"></textarea></div>
-        <!-- ── PER-FIELD MIC ── -->
-        <button class="icon-btn" id="mic-notes" onclick="micField('notes')" title="Speak notes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg></button>
-      </div>
-    </div>
-  </div>
-
-  <button class="btn-primary" onclick="saveStop()">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-    Save stop
-  </button>
-
-  <div class="post-save" id="post-save">
-    <button class="btn-secondary green" id="email-followup-btn" onclick="emailFollowUp()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
-      Email follow-up
-    </button>
-    <button class="btn-secondary" onclick="nextStop()">
-      Next stop
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </button>
-  </div>
-
-  <!-- END OF DAY REPORT -->
-  <div class="report-card">
-    <div class="report-label">📤 End-of-day report</div>
-    <p class="report-hint" style="margin-bottom:10px;">Opens Outlook with the To, Subject, and full report pre-filled — just review and hit Send.</p>
-    <button class="btn-send" id="email-report-btn" onclick="emailReport()" style="width:100%; justify-content:center;">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
-      Send Report
-    </button>
-  </div>
-
-</div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-// CORE STATE
-// ═══════════════════════════════════════════════════════
-let currentStop = 0;
-let stops = [{}];
+(function(){
+  "use strict";
 
-document.getElementById('date-display').textContent =
-  new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  var $ = function(id){ return document.getElementById(id); };
+  function setStatus(el,msg,kind){ el.className = "status show" + (kind?" "+kind:""); el.textContent = msg; }
+  function hideStatus(el){ el.className = "status"; el.textContent = ""; }
 
-function switchStop(idx) {
-  saveCurrentToMemory();
-  currentStop = idx;
-  document.querySelectorAll('.stop-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
-  loadStop(idx);
-  document.getElementById('post-save').classList.remove('show');
-}
+  /* =========================================================
+     STORAGE LAYER
+     iOS Safari throws away backgrounded tabs and reloads them
+     cold. Anything living only in JS variables dies with it.
+     So: every change is written straight through to
+     localStorage, and the page rebuilds itself from storage on
+     every load. Memory is only ever a mirror of disk.
+     ========================================================= */
+  var K = {
+    ROUTE: "bbs_route_v2",
+    DRAFT: "bbs_draft_v2",
+    SETTINGS: "bbs_settings_v2",
+    STAMP: "bbs_last_save_v2"
+  };
 
-function saveCurrentToMemory() {
-  const data = stops[currentStop] || {};
-  document.querySelectorAll('.content [data-key]').forEach(el => { data[el.dataset.key] = el.value; });
-  if(!data._interest) data._interest = 0;
-  stops[currentStop] = data;
-}
+  var storageOK = true;
+  var mem = {};                    // fallback only if localStorage is unavailable
 
-function loadStop(idx) {
-  const d = stops[idx] || {};
-  document.querySelectorAll('.content [data-key]').forEach(el => { el.value = d[el.dataset.key] || ''; });
-  setInterest(d._interest || 0, false);
-  restoreToggle('quote-btn','quote', d._quote);
-  restoreToggle('appt-btn','appt', d._appt);
-}
+  function rawGet(k){
+    try {
+      var v = localStorage.getItem(k);
+      if (v !== null) return v;
+    } catch(e){ storageOK = false; }
+    return (k in mem) ? mem[k] : null;
+  }
+  function rawSet(k,v){
+    mem[k] = v;
+    try { localStorage.setItem(k,v); return true; }
+    catch(e){ storageOK = false; return false; }
+  }
+  function jget(k, dflt){
+    var raw = rawGet(k);
+    if (raw === null) return dflt;
+    try { return JSON.parse(raw); } catch(e){ return dflt; }
+  }
+  function jset(k,obj){ return rawSet(k, JSON.stringify(obj)); }
 
-function addStop() {
-  saveCurrentToMemory();
-  stops.push({});
-  const nav = document.getElementById('stop-nav');
-  const addBtn = nav.querySelector('.add-stop-btn');
-  const idx = stops.length - 1;
-  const btn = document.createElement('button');
-  btn.className = 'stop-tab';
-  btn.textContent = 'Stop ' + (idx + 1);
-  btn.onclick = () => switchStop(idx);
-  nav.insertBefore(btn, addBtn);
-  switchStop(idx);
-  btn.scrollIntoView({behavior:'smooth', inline:'center'});
-  updateStats();
-}
+  // Probe storage up front so the rep finds out now, not after a lost route.
+  (function probe(){
+    try {
+      localStorage.setItem("bbs_probe","1");
+      localStorage.removeItem("bbs_probe");
+    } catch(e){ storageOK = false; }
+    if (!storageOK){
+      var b = $("storageBanner");
+      b.className = "banner show";
+      b.innerHTML = "<b>Warning:</b> this browser is blocking local storage, so work can be lost if the app closes. " +
+                    "If you're in a Private Browsing tab, switch to a normal tab. Email each stop as you finish it.";
+    }
+  })();
 
-function nextStop() { addStop(); }
+  /* ---------- settings ---------- */
+  var DEFAULT_RECIPIENTS = [
+    "mechille@bahiabusinesssolutions.com",
+    "clif@bahiabusinesssolutions.com",
+    "stephanie@bahiabusinesssolutions.com",
+    "michael@bahiabusinesssolutions.com"
+  ].join(", ");
 
-function setInterest(val, save=true) {
-  if(save) { stops[currentStop] = stops[currentStop]||{}; stops[currentStop]._interest = val; }
-  const labels = ['','Cold','Lukewarm','Interested','Warm lead','Hot — follow up ASAP!'];
-  document.querySelectorAll('.int-btn').forEach(b => {
-    b.className = 'int-btn';
-    if(parseInt(b.dataset.val) === val) b.classList.add('a'+val);
+  function settings(){
+    var s = jget(K.SETTINGS, {});
+    if (!s.recipients) s.recipients = DEFAULT_RECIPIENTS;
+    return s;
+  }
+  function saveSettingsObj(s){ jset(K.SETTINGS, s); }
+
+  /* ---------- route ---------- */
+  function newRoute(){
+    return { name:"", date:new Date().toISOString().slice(0,10), stops:[] };
+  }
+  function route(){
+    var r = jget(K.ROUTE, null);
+    if (!r || !Array.isArray(r.stops)) { r = newRoute(); jset(K.ROUTE, r); }
+    return r;
+  }
+  function saveRoute(r){ jset(K.ROUTE, r); stampSaved(); }
+
+  /* ---------- the form <-> plain object ---------- */
+  var TEXT_FIELDS = ["address","city","state","zip","lat","lon","transcript","business",
+                     "contact","title","phone","email","current","followup","notes"];
+
+  function readForm(){
+    var o = {};
+    TEXT_FIELDS.forEach(function(id){ o[id] = $(id).value; });
+    o.outcome  = pillValues("outcomeRow")[0] || "";
+    o.services = pillValues("servicesRow");
+    o.id       = currentId;
+    return o;
+  }
+  function writeForm(o){
+    o = o || {};
+    TEXT_FIELDS.forEach(function(id){ $(id).value = (o[id] === undefined || o[id] === null) ? "" : o[id]; });
+    clearPills("outcomeRow"); clearPills("servicesRow");
+    if (o.outcome)  setPills("outcomeRow", [o.outcome], true);
+    if (o.services) setPills("servicesRow", [].concat(o.services), false);
+    renderCoords();
+  }
+  function formIsEmpty(o){
+    var hasText = TEXT_FIELDS.some(function(id){
+      if (id === "lat" || id === "lon") return false;
+      return String(o[id] || "").trim() !== "";
+    });
+    return !hasText && !o.outcome && (!o.services || !o.services.length);
+  }
+
+  /* ---------- AUTOSAVE ---------- */
+  var currentId = null;            // set when editing an already-saved stop
+  var saveTimer = null;
+
+  function stampSaved(){
+    rawSet(K.STAMP, String(Date.now()));
+    var d = $("saveDot");
+    d.classList.add("on");
+    clearTimeout(stampSaved._t);
+    stampSaved._t = setTimeout(function(){ d.classList.remove("on"); }, 1400);
+    renderLastSaved();
+  }
+
+  function saveDraftNow(){
+    clearTimeout(saveTimer); saveTimer = null;
+    jset(K.DRAFT, readForm());
+    stampSaved();
+  }
+  function scheduleSave(){
+    if (saveTimer) return;
+    saveTimer = setTimeout(saveDraftNow, 400);
+  }
+
+  // Fire on every possible way a value can change.
+  TEXT_FIELDS.forEach(function(id){
+    var el = $(id);
+    el.addEventListener("input", scheduleSave);
+    el.addEventListener("change", scheduleSave);
+    el.addEventListener("blur", saveDraftNow);
   });
-  document.getElementById('int-label').textContent = val ? labels[val] : 'Tap to rate';
-}
 
-function toggleField(btnId, key) {
-  const btn = document.getElementById(btnId);
-  const cur = stops[currentStop] || {};
-  if(!cur['_'+key])             { cur['_'+key]='YES'; btn.className='tog-btn yes'; btn.textContent='✓ Yes'; }
-  else if(cur['_'+key]==='YES') { cur['_'+key]='NO';  btn.className='tog-btn no';  btn.textContent='✗ No'; }
-  else                          { cur['_'+key]=null;  btn.className='tog-btn';     btn.textContent='— Not set'; }
-  stops[currentStop] = cur;
-}
+  // Fire on every possible way the page can go away. iOS is unreliable
+  // about which of these it delivers, so we listen for all of them and
+  // write synchronously each time — a redundant write costs nothing.
+  ["visibilitychange","pagehide","beforeunload","blur","freeze"].forEach(function(ev){
+    var target = (ev === "visibilitychange" || ev === "freeze") ? document : window;
+    target.addEventListener(ev, function(){
+      if (ev === "visibilitychange" && document.visibilityState !== "hidden") return;
+      saveDraftNow();
+    });
+  });
 
-function restoreToggle(btnId, key, val) {
-  const btn = document.getElementById(btnId);
-  if(val==='YES')     { btn.className='tog-btn yes'; btn.textContent='✓ Yes'; }
-  else if(val==='NO') { btn.className='tog-btn no';  btn.textContent='✗ No'; }
-  else                { btn.className='tog-btn';     btn.textContent='— Not set'; }
-}
+  // Heartbeat: catches anything the events above miss.
+  setInterval(function(){
+    var o = readForm();
+    if (JSON.stringify(o) !== rawGet(K.DRAFT)) saveDraftNow();
+  }, 5000);
 
-function saveStop() {
-  saveCurrentToMemory();
-  stops[currentStop]._saved = true;
-  document.querySelectorAll('.stop-tab')[currentStop].classList.add('saved');
-  updateStats();
-  showToast('Stop ' + (currentStop+1) + ' saved!', 'ok');
-  document.getElementById('post-save').classList.add('show');
-}
+  // Coming back from the background: rebuild from disk in case iOS
+  // reloaded the page or restored a stale bfcache snapshot.
+  window.addEventListener("pageshow", function(e){ if (e.persisted) restoreAll(); });
+  document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState === "visible") renderRoute();
+  });
 
-function updateStats() {
-  saveCurrentToMemory();
-  document.getElementById('stat-stops').textContent  = stops.filter(s=>s.company||s['decision-maker']).length;
-  document.getElementById('stat-hot').textContent    = stops.filter(s=>s._interest>=4).length;
-  document.getElementById('stat-appts').textContent  = stops.filter(s=>s._appt==='YES').length;
-  document.getElementById('stat-quotes').textContent = stops.filter(s=>s._quote==='YES').length;
-}
-
-function getRepInfo() {
-  return {
-    rep: document.getElementById('rep-name').value || 'Sales Rep',
-    date: new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})
-  };
-}
-
-function setField(key, value) {
-  const el = document.querySelector(`.content [data-key="${key}"]`);
-  if(el) { el.value = value; if(stops[currentStop]) stops[currentStop][key] = value; }
-}
-
-// ═══════════════════════════════════════════════════════
-// FEATURE: PER-FIELD SPEECH-TO-TEXT (Browser Web Speech API)
-// Uses built-in browser recognition — works offline, no API needed.
-// TO REMOVE: delete this entire block AND remove all icon-btn mic elements in the HTML above.
-// ═══════════════════════════════════════════════════════
-let activeMicBtn = null;
-let activeRecognition = null;
-
-function micField(key) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRecognition) { showToast('Speech not supported in this browser', 'err'); return; }
-
-  // If already recording this field, stop it
-  if(activeRecognition) {
-    activeRecognition.stop();
-    activeRecognition = null;
-    if(activeMicBtn) { activeMicBtn.classList.remove('recording'); activeMicBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg>'; activeMicBtn = null; }
-    return;
+  function renderLastSaved(){
+    var t = parseInt(rawGet(K.STAMP) || "0", 10);
+    $("lastSavedHint").textContent = t
+      ? "Last saved " + new Date(t).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}) +
+        " — your route is stored on this phone and survives closing the app."
+      : "Your route is stored on this phone and survives closing the app.";
   }
 
-  // Find the mic button for this field
-  const btn = [...document.querySelectorAll('.icon-btn')].find(b => b.getAttribute('onclick') === `micField('${key}')`);
-  if(btn) { btn.classList.add('recording'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>'; activeMicBtn = btn; }
-
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-  activeRecognition = recognition;
-
-  recognition.onresult = (e) => {
-    const transcript = e.results[0][0].transcript;
-    const el = document.querySelector(`.content [data-key="${key}"]`);
-    if(el) {
-      // Append to existing text for notes/pain, replace for other fields
-      if(key === 'notes' || key === 'pain') {
-        el.value = el.value ? el.value + ' ' + transcript : transcript;
-      } else {
-        el.value = transcript;
+  /* ---------- pills ---------- */
+  function wirePills(rowId, single){
+    $(rowId).addEventListener("click", function(e){
+      var b = e.target.closest(".pill");
+      if (!b) return;
+      e.preventDefault();
+      if (single){
+        var was = b.classList.contains("on");
+        clearPills(rowId);
+        if (!was) b.classList.add("on");
+      } else b.classList.toggle("on");
+      saveDraftNow();
+    });
+  }
+  wirePills("outcomeRow", true);
+  wirePills("servicesRow", false);
+  function clearPills(rowId){
+    Array.prototype.forEach.call($(rowId).querySelectorAll(".pill"), function(p){ p.classList.remove("on"); });
+  }
+  function pillValues(rowId){
+    return Array.prototype.map.call($(rowId).querySelectorAll(".pill.on"), function(p){ return p.dataset.v; });
+  }
+  function setPills(rowId, values, single){
+    var wanted = (values||[]).map(function(v){ return String(v).toLowerCase().trim(); });
+    var matched = false;
+    Array.prototype.forEach.call($(rowId).querySelectorAll(".pill"), function(p){
+      if (wanted.indexOf(p.dataset.v.toLowerCase()) !== -1 && (!single || !matched)){
+        p.classList.add("on"); matched = true;
       }
-      if(stops[currentStop]) stops[currentStop][key] = el.value;
-    }
-    showToast('Got it!', 'ok');
-  };
-
-  recognition.onerror = (e) => {
-    const msgs = { 'not-allowed':'Microphone permission denied', 'no-speech':'No speech detected', 'network':'Network error' };
-    showToast(msgs[e.error] || 'Mic error: ' + e.error, 'err');
-  };
-
-  recognition.onend = () => {
-    activeRecognition = null;
-    if(activeMicBtn) { activeMicBtn.classList.remove('recording'); activeMicBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg>'; activeMicBtn = null; }
-  };
-
-  recognition.start();
-}
-// ═══════════════════════════════════════════════════════
-// END: PER-FIELD SPEECH-TO-TEXT
-// ═══════════════════════════════════════════════════════
-
-
-// ═══════════════════════════════════════════════════════
-// FEATURE: AI VOICE FILL (Dictate entire stop at once)
-// Requires Anthropic API — works when hosted on a real URL, not local file.
-// TO REMOVE: delete this entire block AND remove the voice-fill-bar div in the HTML above.
-// ═══════════════════════════════════════════════════════
-let voiceRecognition = null;
-let isVoiceFillRecording = false;
-
-function toggleVoiceFill() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SpeechRecognition) { showToast('Speech not supported in this browser', 'err'); return; }
-
-  if(isVoiceFillRecording) {
-    voiceRecognition && voiceRecognition.stop();
-    return;
+    });
   }
 
-  const btn = document.getElementById('voice-fill-btn');
-  btn.classList.add('recording');
-  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg> Listening… tap to stop';
-  isVoiceFillRecording = true;
+  /* ---------- route rendering ---------- */
+  function stopTitle(s){
+    return (s.business || "").trim() ||
+           [s.address, s.city].filter(function(x){ return String(x||"").trim(); }).join(", ").trim() ||
+           "Untitled stop";
+  }
+  function stopMeta(s){
+    var bits = [];
+    if (s.outcome) bits.push(s.outcome);
+    if (s.contact) bits.push(s.contact);
+    if (s.business && s.address) bits.push(s.address);
+    if (s.savedAt) bits.push(new Date(s.savedAt).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"}));
+    return bits.join(" · ");
+  }
 
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-  recognition.continuous = false;
-  voiceRecognition = recognition;
-
-  recognition.onresult = async (e) => {
-    const transcript = e.results[0][0].transcript;
-    btn.classList.remove('recording');
-    btn.classList.add('processing');
-    btn.textContent = '⏳ Filling fields…';
-    await parseAndFillStop(transcript);
-    btn.classList.remove('processing');
-    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h2M6 8v8M10 5v14M14 8v8M18 6v12M22 12h-2"/></svg> Dictate this stop';
-  };
-
-  recognition.onerror = (e) => {
-    const msgs = { 'not-allowed':'Microphone permission denied', 'no-speech':'No speech detected' };
-    showToast(msgs[e.error] || 'Mic error', 'err');
-    btn.classList.remove('recording');
-    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h2M6 8v8M10 5v14M14 8v8M18 6v12M22 12h-2"/></svg> Dictate this stop';
-  };
-
-  recognition.onend = () => {
-    isVoiceFillRecording = false;
-    voiceRecognition = null;
-    if(btn.classList.contains('recording')) {
-      btn.classList.remove('recording');
-      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h2M6 8v8M10 5v14M14 8v8M18 6v12M22 12h-2"/></svg> Dictate this stop';
+  function renderRoute(){
+    var r = route(), list = $("stopList");
+    $("stopCount").textContent = r.stops.length + (r.stops.length === 1 ? " stop" : " stops");
+    $("routeLabel").textContent = (r.name || "Field Route").toUpperCase();
+    list.innerHTML = "";
+    if (!r.stops.length){
+      var e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "No stops saved yet. Fill in a visit below and tap “Save Stop.”";
+      list.appendChild(e);
+      return;
     }
-  };
+    r.stops.forEach(function(s, i){
+      var row = document.createElement("div");
+      row.className = "stop" + (s.id === currentId ? " editing" : "");
 
-  recognition.start();
-}
+      var n = document.createElement("div");
+      n.className = "num"; n.textContent = String(i+1);
 
-async function parseAndFillStop(transcript) {
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 600,
-        system: `You are a field data parser for a sales canvassing app. The user will give you a spoken description of a business visit. Extract fields and return ONLY a JSON object with these keys (omit any you can't find):
-company, address, phone, receptionist, "decision-maker", "dm-phone", email, industry, provider, pain, notes, "next-step", interest (number 1-5).
-For "next-step" use one of: "Call to follow up", "Send quote", "Email intro / info", "Schedule demo", "Return visit", "No follow-up needed".
-For industry use one of: "Medical / Healthcare", "Dental", "Manufacturing", "Electrical", "Legal", "Real Estate", "Retail", "Restaurant / Food Service", "Finance / Accounting", "Construction", "Education", "Other".
-Return ONLY raw JSON, no markdown, no explanation.`,
-        messages: [{role:'user', content: transcript}]
+      var body = document.createElement("div");
+      body.className = "body";
+      var t = document.createElement("div"); t.className = "t"; t.textContent = stopTitle(s);
+      var m = document.createElement("div"); m.className = "m"; m.textContent = stopMeta(s);
+      body.appendChild(t); body.appendChild(m);
+      body.addEventListener("click", function(){ editStop(s.id); });
+
+      var del = document.createElement("button");
+      del.className = "del"; del.innerHTML = "&times;";
+      del.setAttribute("aria-label","Delete stop");
+      del.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        if (!confirm("Delete “" + stopTitle(s) + "” from the route?")) return;
+        var rr = route();
+        rr.stops = rr.stops.filter(function(x){ return x.id !== s.id; });
+        saveRoute(rr);
+        if (currentId === s.id){ currentId = null; jset(K.DRAFT, {}); writeForm({}); }
+        renderRoute();
+      });
+
+      row.appendChild(n); row.appendChild(body); row.appendChild(del);
+      list.appendChild(row);
+    });
+  }
+
+  function editStop(id){
+    // Park whatever is in the form before loading something else.
+    commitDraftToRoute(true);
+    var s = route().stops.filter(function(x){ return x.id === id; })[0];
+    if (!s) return;
+    currentId = id;
+    writeForm(s);
+    saveDraftNow();
+    renderRoute();
+    window.scrollTo({ top: $("address").getBoundingClientRect().top + window.scrollY - 80, behavior:"smooth" });
+  }
+
+  /* Save the form into the route. silent=true means "only if there's
+     something worth keeping, and don't nag about it." */
+  function commitDraftToRoute(silent){
+    var o = readForm();
+    if (formIsEmpty(o)){
+      if (!silent) setStatus($("routeStatus"), "Nothing to save yet — fill in at least one field.", "warn");
+      return false;
+    }
+    var r = route();
+    if (currentId){
+      var found = false;
+      r.stops = r.stops.map(function(s){
+        if (s.id === currentId){ found = true; o.id = currentId; o.savedAt = Date.now(); return o; }
+        return s;
+      });
+      if (!found){ o.id = currentId; o.savedAt = Date.now(); r.stops.push(o); }
+    } else {
+      o.id = "s" + Date.now() + Math.random().toString(36).slice(2,6);
+      o.savedAt = Date.now();
+      currentId = o.id;
+      r.stops.push(o);
+    }
+    saveRoute(r);
+    return true;
+  }
+
+  $("saveStopBtn").addEventListener("click", function(){
+    if (!commitDraftToRoute(false)) return;
+    var n = route().stops.length;
+    currentId = null;
+    jset(K.DRAFT, {});
+    writeForm({});
+    hideStatus($("gpsStatus")); hideStatus($("dictStatus"));
+    setStatus($("routeStatus"), "Stop saved. Route now has " + n + (n===1?" stop.":" stops."), "good");
+    renderRoute();
+    stampSaved();
+    window.scrollTo({ top:0, behavior:"smooth" });
+  });
+
+  $("newStopBtn").addEventListener("click", function(){
+    commitDraftToRoute(true);
+    currentId = null;
+    jset(K.DRAFT, {});
+    writeForm({});
+    hideStatus($("gpsStatus")); hideStatus($("dictStatus")); hideStatus($("routeStatus"));
+    renderRoute();
+    window.scrollTo({ top: $("gpsBtn").getBoundingClientRect().top + window.scrollY - 80, behavior:"smooth" });
+  });
+
+  $("discardBtn").addEventListener("click", function(){
+    if (!confirm("Clear the form below? Stops already saved to the route are not affected.")) return;
+    currentId = null;
+    jset(K.DRAFT, {});
+    writeForm({});
+    hideStatus($("gpsStatus")); hideStatus($("dictStatus")); hideStatus($("routeStatus"));
+    renderRoute();
+  });
+
+  $("endRouteBtn").addEventListener("click", function(){
+    var r = route();
+    if (r.stops.length && !confirm("Start a new route? The current " + r.stops.length +
+        " stop(s) will be cleared — email or download a backup first if you still need them.")) return;
+    jset(K.ROUTE, newRoute());
+    jset(K.DRAFT, {});
+    currentId = null;
+    writeForm({});
+    renderRoute();
+    setStatus($("routeStatus"), "New route started.", "good");
+  });
+
+  /* ---------- GPS ---------- */
+  $("gpsBtn").addEventListener("click", function(){
+    var s = $("gpsStatus");
+    if (!navigator.geolocation){ setStatus(s,"This browser has no location support.","bad"); return; }
+    setStatus(s,"Getting your location…","busy");
+    navigator.geolocation.getCurrentPosition(function(pos){
+      $("lat").value = pos.coords.latitude.toFixed(6);
+      $("lon").value = pos.coords.longitude.toFixed(6);
+      renderCoords(Math.round(pos.coords.accuracy));
+      saveDraftNow();
+      setStatus(s,"Location locked. Looking up the address…","busy");
+      reverseGeocode(pos.coords.latitude, pos.coords.longitude, s);
+    }, function(err){
+      var m = "Couldn't get location.";
+      if (err.code === 1) m = "Location permission denied. Enable it in Settings › Safari › Location.";
+      else if (err.code === 3) m = "Location timed out. Try again outdoors.";
+      setStatus(s,m,"bad");
+    }, { enableHighAccuracy:true, timeout:15000, maximumAge:0 });
+  });
+
+  function renderCoords(acc){
+    var la = $("lat").value, lo = $("lon").value;
+    $("coordsLine").innerHTML = (la && lo)
+      ? "<b>Coords:</b> " + la + ", " + lo + (acc ? " &nbsp;(&plusmn;" + acc + "m)" : "")
+      : "";
+  }
+
+  function reverseGeocode(lat, lon, s){
+    var url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+              encodeURIComponent(lat) + "&lon=" + encodeURIComponent(lon) + "&addressdetails=1";
+    fetch(url, { headers:{ "Accept":"application/json" } })
+      .then(function(r){ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+      .then(function(d){
+        var a = d.address || {};
+        var street = [a.house_number, a.road].filter(Boolean).join(" ");
+        if (street) $("address").value = street;
+        $("city").value  = a.city || a.town || a.village || a.hamlet || a.suburb || "";
+        $("state").value = stateAbbr(a.state || "");
+        $("zip").value   = a.postcode || "";
+        saveDraftNow();
+        setStatus(s, street ? "Address filled in — double-check it."
+                            : "Got coordinates, but no street match. Type the address in.",
+                     street ? "good" : "warn");
       })
-    });
-    const data = await resp.json();
-    if(data.error) throw new Error(data.error.message);
-    const text = (data.content||[]).map(c=>c.text||'').join('').trim();
-    const parsed = JSON.parse(text);
-
-    // Fill each recognized field
-    Object.entries(parsed).forEach(([key, val]) => {
-      if(key === 'interest') {
-        setInterest(parseInt(val) || 0);
-      } else if(key === 'next-step') {
-        const sel = document.querySelector('.content [data-key="next-step"]');
-        if(sel) { sel.value = val; if(stops[currentStop]) stops[currentStop]['next-step'] = val; }
-      } else if(key === 'industry') {
-        const sel = document.querySelector('.content [data-key="industry"]');
-        if(sel) { sel.value = val; if(stops[currentStop]) stops[currentStop]['industry'] = val; }
-      } else {
-        setField(key, val);
-      }
-    });
-
-    showToast('Fields filled! Review and adjust.', 'ok');
-  } catch(e) {
-    showToast('Could not parse — try again or fill manually', 'err');
-    console.error(e);
+      .catch(function(){
+        saveDraftNow();
+        setStatus(s,"Coordinates saved, but the address lookup failed (no signal?). Type the address in.","warn");
+      });
   }
-}
-// ═══════════════════════════════════════════════════════
-// END: AI VOICE FILL
-// ═══════════════════════════════════════════════════════
 
+  var STATES = {"alabama":"AL","alaska":"AK","arizona":"AZ","arkansas":"AR","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","idaho":"ID","illinois":"IL","indiana":"IN","iowa":"IA","kansas":"KS","kentucky":"KY","louisiana":"LA","maine":"ME","maryland":"MD","massachusetts":"MA","michigan":"MI","minnesota":"MN","mississippi":"MS","missouri":"MO","montana":"MT","nebraska":"NE","nevada":"NV","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","new york":"NY","north carolina":"NC","north dakota":"ND","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","vermont":"VT","virginia":"VA","washington":"WA","west virginia":"WV","wisconsin":"WI","wyoming":"WY","district of columbia":"DC"};
+  function stateAbbr(name){
+    var k = String(name).toLowerCase().trim();
+    return STATES[k] || (name.length <= 2 ? name.toUpperCase() : name);
+  }
 
-// ═══════════════════════════════════════════════════════
-// MAILTO — opens default mail app (Outlook) pre-filled
-// ═══════════════════════════════════════════════════════
-const REPORT_TO = 'mechille@bahiabusinesssolutions.com,clif@bahiabusinesssolutions.com,stephanie@bahiabusinesssolutions.com,michael@bahiabusinesssolutions.com';
+  /* ---------- dictation ---------- */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = null, listening = false, baseText = "";
 
-function emailFollowUp() {
-  saveCurrentToMemory();
-  const s = stops[currentStop];
-  const rep = getRepInfo();
-  if(!s.email) { showToast('Add a contact email first', 'err'); return; }
-  const subject = encodeURIComponent(`Great meeting you today — ${s.company||'Bahia Business Solutions follow-up'}`);
-  const body = encodeURIComponent(buildFollowUpBody(s, rep));
-  stops[currentStop]._emailSent = true;
-  window.location.href = `mailto:${encodeURIComponent(s.email)}?subject=${subject}&body=${body}`;
-}
+  $("micBtn").addEventListener("click", function(){
+    var s = $("dictStatus");
+    if (!SR){
+      setStatus(s,"Speech recognition isn't available here. Use the iPhone keyboard's mic key instead — same result.","warn");
+      $("transcript").focus();
+      return;
+    }
+    if (listening){ stopRec(); return; }
 
-function emailReport() {
-  saveCurrentToMemory();
-  const savedStops = stops.filter(s=>s.company||s['decision-maker']);
-  if(!savedStops.length) { showToast('No stops saved yet', 'err'); return; }
-  const rep = getRepInfo();
-  const subject = encodeURIComponent(`Canvassing Report — ${rep.rep} — ${rep.date}`);
-  const body = encodeURIComponent(buildReportBody(savedStops, rep));
-  window.location.href = `mailto:${REPORT_TO}?subject=${subject}&body=${body}`;
-}
+    rec = new SR();
+    rec.continuous = true; rec.interimResults = true; rec.lang = "en-US";
+    baseText = $("transcript").value;
+    if (baseText && !/\s$/.test(baseText)) baseText += " ";
 
-// ═══════════════════════════════════════════════════════
-// LOCATION CAPTURE
-// ═══════════════════════════════════════════════════════
-function captureLocation() {
-  if(!navigator.geolocation) { showToast('Geolocation not supported', 'err'); return; }
-  const btn = document.getElementById('loc-btn');
-  btn.classList.add('locating');
-  btn.innerHTML = '<span class="spin"></span>';
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      const { latitude: lat, longitude: lon } = pos.coords;
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
-          { headers: {'Accept-Language':'en-US,en','User-Agent':'BBS-Canvassing-App'} }
-        );
-        const json = await res.json();
-        const a = json.address || {};
-        const street = [a.house_number, a.road].filter(Boolean).join(' ');
-        const city   = a.city || a.town || a.village || a.county || '';
-        const full   = [street, city, a.state, a.postcode].filter(Boolean).join(', ');
-        const field  = document.getElementById('address-field');
-        field.value  = full || `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
-        if(stops[currentStop]) stops[currentStop].address = field.value;
-        showToast('Location captured!', 'ok');
-      } catch(e) {
-        const field = document.getElementById('address-field');
-        field.value = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
-        showToast('Address lookup failed — coordinates saved', 'err');
+    rec.onstart = function(){
+      listening = true;
+      $("micBtn").className = "btn btn-rec";
+      $("micBtn").innerHTML = '<span class="rec-dot"></span>Listening &mdash; tap to stop';
+      setStatus(s,"Listening… speak naturally.","busy");
+    };
+    rec.onresult = function(e){
+      var finalTxt = "", interim = "";
+      for (var i = e.resultIndex; i < e.results.length; i++){
+        var t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalTxt += t + " "; else interim += t;
       }
-      btn.classList.remove('locating');
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>';
-    },
-    (err) => {
-      btn.classList.remove('locating');
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>';
-      const msgs = {1:'Location permission denied',2:'Position unavailable',3:'Location timed out'};
-      showToast(msgs[err.code] || 'Location error', 'err');
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-  );
-}
+      if (finalTxt){ baseText += finalTxt; }
+      $("transcript").value = baseText + interim;
+      if (finalTxt) saveDraftNow();   // persist each finalized phrase immediately
+    };
+    rec.onerror = function(e){
+      var m = "Dictation error: " + e.error;
+      if (e.error === "not-allowed") m = "Microphone permission denied. Enable it in Settings › Safari › Microphone.";
+      else if (e.error === "no-speech") m = "Didn't catch anything. Tap the mic and try again.";
+      else if (e.error === "network") m = "Speech service needs a connection. Type it in for now.";
+      setStatus(s,m,"bad");
+      stopRec();
+    };
+    rec.onend = function(){ if (listening) stopRec(); };
 
-
-// ═══════════════════════════════════════════════════════
-// EMAIL & REPORT
-// ═══════════════════════════════════════════════════════
-
-
-function buildFollowUpBody(s, rep) {
-  const dm = s['decision-maker'] || '';
-  const first = dm.split(' ')[0] || null;
-  const greeting = first ? `Hi ${first},` : 'Hello,';
-  const company = s.company || 'your business';
-  const painLine = s.pain ? `\nYou mentioned ${s.pain} — that's exactly the kind of challenge we help businesses tackle.\n` : '';
-  const nextLine = s['next-step'] ? `Next step: ${s['next-step']}.` : "I'd love to set up a quick call to explore how we can help.";
-  return `${greeting}
-
-It was great stopping by ${company} today. I'm following up to share a bit more about Bahia Business Solutions.
-
-We're a local managed IT services provider based in Seguin — covering everything from day-to-day tech support and cybersecurity to network infrastructure and cloud solutions. Our goal is to give your team reliable, responsive IT without the overhead of an in-house department.
-${painLine}
-${nextLine}
-
-Feel free to reach out anytime.
-
-Best,
-${rep.rep}
-Bahia Business Solutions | Seguin, TX
-bahiabusiness.com`;
-}
-
-function buildReportBody(savedStops, rep) {
-  const hot    = savedStops.filter(s=>s._interest>=4);
-  const appts  = savedStops.filter(s=>s._appt==='YES');
-  const quotes = savedStops.filter(s=>s._quote==='YES');
-  const line   = '─'.repeat(42);
-  let body = `BAHIA BUSINESS SOLUTIONS — CANVASSING REPORT\n${line}\nRep:   ${rep.rep}\nDate:  ${rep.date}\n\nSUMMARY\n${line}\nTotal stops:       ${savedStops.length}\nHot leads (4-5):   ${hot.length}\nAppointments set:  ${appts.length}\nQuotes needed:     ${quotes.length}\n\nSTOP DETAILS\n${line}\n\n`;
-  savedStops.forEach((s,i) => {
-    const stars = s._interest ? '★'.repeat(s._interest)+'☆'.repeat(5-s._interest) : 'not rated';
-    body += `[ STOP ${i+1} ] ${s.company||'Unknown'}\n  Address:        ${s.address||'—'}\n  Phone:          ${s.phone||'—'}\n  Receptionist:   ${s.receptionist||'—'}\n  Decision maker: ${s['decision-maker']||'—'}\n  DM phone:       ${s['dm-phone']||'—'}\n  Email:          ${s.email||'—'}\n  Industry:       ${s.industry||'—'}\n  Current vendor: ${s.provider||'—'}\n  Interest:       ${stars} (${s._interest||0}/5)\n  Pain points:    ${s.pain||'—'}\n  Quote needed:   ${s._quote||'—'}\n  Appt set:       ${s._appt||'—'}\n  Next step:      ${s['next-step']||'—'}\n  Follow-up date: ${s['followup-date']||'—'}\n  Follow-up sent: ${s._emailSent?'Yes':'No'}\n  Notes:          ${s.notes||'—'}\n\n`;
+    try { rec.start(); }
+    catch(err){ setStatus(s,"Couldn't start the mic. Try again.","bad"); }
   });
-  if(hot.length) {
-    body += `${line}\nHOT LEADS — FOLLOW UP FIRST\n${line}\n`;
-    hot.forEach(s => { body += `  • ${s.company||'?'} | ${s['decision-maker']||'?'} | ${s.email||s['dm-phone']||'no contact'} | ${s._interest}/5\n`; });
-    body += '\n';
-  }
-  body += `${line}\nSent via BBS Canvassing App`;
-  return body;
-}
 
-// ═══════════════════════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════════════════════
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (type?' '+type:'');
-  setTimeout(() => { t.className='toast'; }, 2600);
-}
+  function stopRec(){
+    listening = false;
+    try { if (rec) rec.stop(); } catch(e){}
+    $("micBtn").className = "btn btn-primary";
+    $("micBtn").innerHTML = "&#127908;&nbsp; Start Dictation";
+    saveDraftNow();
+    var s = $("dictStatus");
+    if (s.classList.contains("busy")) setStatus(s,"Stopped and saved. Tap “Parse with AI” or fill the fields yourself.","good");
+  }
+
+  /* ---------- AI parsing ---------- */
+  var SCHEMA_HINT = [
+    "business","contact","title","phone","email",
+    "outcome (one of: Interested, Follow-up, Not Interested, No Answer, Gatekeeper, Left Card)",
+    "services (array from: Managed IT, Network / WiFi, Cameras, VoIP, Cabling, Break/Fix, Signage, Web / Marketing)",
+    "current_provider","followup_date (YYYY-MM-DD)","notes (clean summary + next step)"
+  ].join(", ");
+
+  $("parseBtn").addEventListener("click", function(){
+    var s = $("dictStatus");
+    var text = $("transcript").value.trim();
+    if (!text){ setStatus(s,"Nothing to parse yet — dictate or type first.","warn"); return; }
+
+    var key = (settings().apiKey || "").trim();
+    if (!key){ setStatus(s,"Add your Anthropic API key in Settings (gear, top right) to use AI parsing.","warn"); return; }
+
+    setStatus(s,"Parsing with Claude…","busy");
+    $("parseBtn").disabled = true;
+
+    var today = new Date().toISOString().slice(0,10);
+    var prompt =
+      "You are parsing a field sales rep's spoken notes from a door-to-door canvassing visit for an IT/managed-services company.\n\n" +
+      "Today's date is " + today + ".\n\n" +
+      "Extract these fields: " + SCHEMA_HINT + ".\n\n" +
+      "Rules:\n" +
+      "- Return ONLY a JSON object. No markdown fences, no commentary.\n" +
+      "- Omit any field you cannot determine from the notes. Never invent details.\n" +
+      "- Resolve relative dates (\"next Tuesday\", \"in two weeks\") against today's date.\n" +
+      "- \"notes\" should be a tightened-up version of what was said: what they use now, pain points, and the concrete next step.\n\n" +
+      "Rep's notes:\n\"\"\"\n" + text + "\n\"\"\"";
+
+    fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{
+        "content-type":"application/json",
+        "x-api-key":key,
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true"
+      },
+      body: JSON.stringify({
+        model:"claude-sonnet-4-5",
+        max_tokens:1200,
+        messages:[{ role:"user", content:prompt }]
+      })
+    })
+    .then(function(r){
+      return r.text().then(function(body){
+        if (!r.ok){
+          var msg = "API error " + r.status;
+          try { var j = JSON.parse(body); if (j.error && j.error.message) msg += ": " + j.error.message; } catch(e){}
+          if (r.status === 401) msg = "API key rejected. Check it in Settings.";
+          if (r.status === 429) msg = "Rate limited by the API. Wait a moment and try again.";
+          throw new Error(msg);
+        }
+        return JSON.parse(body);
+      });
+    })
+    .then(function(data){
+      var out = "";
+      (data.content||[]).forEach(function(b){ if (b.type === "text") out += b.text; });
+      var obj = extractJSON(out);
+      if (!obj) throw new Error("Couldn't read the AI response. Fill the fields in manually.");
+      applyParsed(obj);
+      saveDraftNow();
+      setStatus(s,"Fields filled in — review them, then Save Stop.","good");
+    })
+    .catch(function(err){ setStatus(s, String(err.message || err), "bad"); })
+    .then(function(){ $("parseBtn").disabled = false; });
+  });
+
+  function extractJSON(str){
+    if (!str) return null;
+    var t = str.trim().replace(/^```(?:json)?/i,"").replace(/```$/,"").trim();
+    try { return JSON.parse(t); } catch(e){}
+    var a = t.indexOf("{"), b = t.lastIndexOf("}");
+    if (a !== -1 && b > a){ try { return JSON.parse(t.slice(a,b+1)); } catch(e){} }
+    return null;
+  }
+  function fill(id,val){
+    if (val === undefined || val === null) return;
+    var v = String(val).trim();
+    if (v) $(id).value = v;
+  }
+  function applyParsed(o){
+    fill("business",o.business); fill("contact",o.contact); fill("title",o.title);
+    fill("phone",o.phone); fill("email",o.email);
+    fill("current",o.current_provider); fill("notes",o.notes);
+    if (o.followup_date && /^\d{4}-\d{2}-\d{2}$/.test(String(o.followup_date).trim())){
+      $("followup").value = String(o.followup_date).trim();
+    }
+    if (o.outcome)  setPills("outcomeRow",[o.outcome],true);
+    if (o.services) setPills("servicesRow",[].concat(o.services),false);
+  }
+
+  /* ---------- reports ---------- */
+  function stopText(s, includeRaw){
+    var addr = [
+      String(s.address||"").trim(),
+      [String(s.city||"").trim(), String(s.state||"").trim()].filter(Boolean).join(", "),
+      String(s.zip||"").trim()
+    ].filter(Boolean).join(" ").replace(/\s+/g," ").trim();
+
+    var L = [];
+    if (addr)        L.push("Address:        " + addr);
+    if (s.business)  L.push("Business:       " + s.business);
+    if (s.contact)   L.push("Contact:        " + s.contact + (s.title ? " (" + s.title + ")" : ""));
+    if (s.phone)     L.push("Phone:          " + s.phone);
+    if (s.email)     L.push("Email:          " + s.email);
+    if (s.outcome)   L.push("Outcome:        " + s.outcome);
+    if (s.services && s.services.length) L.push("Services:       " + [].concat(s.services).join(", "));
+    if (s.current)   L.push("Current Vendor: " + s.current);
+    if (s.followup)  L.push("Follow-up:      " + s.followup);
+    if (s.lat && s.lon) L.push("Map:            https://maps.apple.com/?q=" + s.lat + "," + s.lon);
+    if (s.notes){ L.push(""); L.push("Notes / Next Step:"); L.push(s.notes); }
+    if (includeRaw && s.transcript){ L.push(""); L.push("Dictation: " + s.transcript); }
+    return L.join("\n");
+  }
+
+  function mailto(to, subject, body){
+    var addr = String(to).split(/[,;\n]+/).map(function(x){ return x.trim(); }).filter(Boolean).join(",");
+    return "mailto:" + encodeURIComponent(addr) +
+           "?subject=" + encodeURIComponent(subject) +
+           "&body=" + encodeURIComponent(body);
+  }
+  function openMail(to, subject, body, altBody){
+    var url = mailto(to, subject, body);
+    // iOS silently drops very long mailto URLs — fall back to the trimmed body.
+    if (url.length > 6000 && altBody) url = mailto(to, subject, altBody);
+    // An anchor click is handled more reliably by iOS Safari than location.href.
+    var a = document.createElement("a");
+    a.href = url;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ if (a.parentNode) a.parentNode.removeChild(a); }, 1000);
+  }
+
+  $("emailStopBtn").addEventListener("click", function(){
+    var o = readForm();
+    if (formIsEmpty(o)){ setStatus($("routeStatus"),"Nothing to email — the form is empty.","warn"); return; }
+    commitDraftToRoute(true);   // never email something that isn't also saved
+    renderRoute();
+    var st = settings();
+    var head = "CANVASSING VISIT REPORT\n\n" +
+               (st.repName ? "Rep:            " + st.repName + "\n" : "") +
+               "Date/Time:      " + new Date().toLocaleString("en-US",{dateStyle:"medium",timeStyle:"short"}) + "\n\n";
+    var full = head + stopText(o, true) + "\n\n-- Sent from the BBS Canvassing app";
+    var lite = head + stopText(o, false) + "\n\n-- Sent from the BBS Canvassing app";
+    var subj = "Canvass: " + ((o.business||"").trim() || (o.address||"").trim() || "Field Visit") +
+               (o.outcome ? " — " + o.outcome : "");
+    openMail(st.recipients, subj, full, lite);
+  });
+
+  $("emailRouteBtn").addEventListener("click", function(){
+    commitDraftToRoute(true);
+    renderRoute();
+    var r = route(), st = settings();
+    if (!r.stops.length){ setStatus($("routeStatus"),"No stops on the route yet.","warn"); return; }
+
+    function build(includeRaw){
+      var L = [];
+      L.push("CANVASSING ROUTE REPORT");
+      L.push("");
+      if (r.name)     L.push("Route:  " + r.name);
+      if (st.repName) L.push("Rep:    " + st.repName);
+      L.push("Date:   " + new Date().toLocaleDateString("en-US",{dateStyle:"medium"}));
+      L.push("Stops:  " + r.stops.length);
+      L.push("");
+      r.stops.forEach(function(s,i){
+        L.push("========================================");
+        L.push("STOP " + (i+1) + " — " + stopTitle(s));
+        L.push("========================================");
+        L.push(stopText(s, includeRaw));
+        L.push("");
+      });
+      L.push("-- Sent from the BBS Canvassing app");
+      return L.join("\n");
+    }
+    var subj = "Canvass Route: " + (r.name || new Date().toLocaleDateString("en-US",{dateStyle:"medium"})) +
+               " — " + r.stops.length + " stops";
+    openMail(st.recipients, subj, build(true), build(false));
+    setStatus($("routeStatus"),"Opening your mail app with all " + r.stops.length + " stops.","good");
+  });
+
+  $("backupBtn").addEventListener("click", function(){
+    commitDraftToRoute(true);
+    renderRoute();
+    var r = route();
+    var blob = new Blob([JSON.stringify(r,null,2)], { type:"application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "bbs-route-" + (r.date || "today") + ".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+    setStatus($("routeStatus"),"Backup file created.","good");
+  });
+
+  /* ---------- settings UI ---------- */
+  function loadSettingsUI(){
+    var s = settings(), r = route();
+    $("apiKey").value     = s.apiKey || "";
+    $("recipients").value = s.recipients || DEFAULT_RECIPIENTS;
+    $("repName").value    = s.repName || "";
+    $("routeName").value  = r.name || "";
+  }
+  $("settingsBtn").addEventListener("click", function(){
+    loadSettingsUI(); hideStatus($("setStatus")); $("settingsModal").classList.add("show");
+  });
+  $("closeSettings").addEventListener("click", function(){ $("settingsModal").classList.remove("show"); });
+  $("settingsModal").addEventListener("click", function(e){
+    if (e.target === $("settingsModal")) $("settingsModal").classList.remove("show");
+  });
+  $("saveSettings").addEventListener("click", function(){
+    saveSettingsObj({
+      apiKey:     $("apiKey").value.trim(),
+      recipients: $("recipients").value.trim() || DEFAULT_RECIPIENTS,
+      repName:    $("repName").value.trim()
+    });
+    var r = route();
+    r.name = $("routeName").value.trim();
+    saveRoute(r);
+    renderRoute();
+    setStatus($("setStatus"), storageOK ? "Saved." : "Saved for this session only — storage is blocked in this browser.", storageOK ? "good" : "warn");
+    setTimeout(function(){ $("settingsModal").classList.remove("show"); }, 700);
+  });
+
+  /* ---------- boot ---------- */
+  function restoreAll(){
+    var draft = jget(K.DRAFT, {});
+    currentId = draft && draft.id ? draft.id : null;
+    // If the draft points at a stop that's since been deleted, treat it as new.
+    if (currentId && !route().stops.some(function(s){ return s.id === currentId; })) currentId = null;
+    writeForm(draft);
+    renderRoute();
+    renderLastSaved();
+  }
+
+  restoreAll();
+
+  // Tell the rep what was recovered, so a reload never feels like data loss.
+  (function announceRecovery(){
+    var r = route(), draft = jget(K.DRAFT, {});
+    var hasDraft = draft && !formIsEmpty(draft);
+    if (r.stops.length || hasDraft){
+      var bits = [];
+      if (r.stops.length) bits.push(r.stops.length + (r.stops.length===1?" saved stop":" saved stops"));
+      if (hasDraft) bits.push("your in-progress visit");
+      setStatus($("routeStatus"), "Restored " + bits.join(" and ") + " from this phone.", "good");
+    }
+  })();
+})();
 </script>
 </body>
 </html>
